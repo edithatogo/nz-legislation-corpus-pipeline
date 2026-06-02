@@ -1,0 +1,5 @@
+# Deterministic seed work IDs for corpus bootstrap/reconciliation.
+# Add one official NZ Legislation work_id per line.
+# Examples below are illustrative; verify against the API before relying on them.
+act_public_1990_109
+act_public_1993_82

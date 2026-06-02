@@ -1,0 +1,4 @@
+# Replace these with official NZ Legislation API work_id values.
+# One work_id per line.
+act_public_1990_109
+act_public_1993_82

@@ -1,0 +1,35 @@
+name: Non-destructive service doctor
+
+on:
+  schedule:
+    - cron: "42 15 * * 0" # weekly
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  doctor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          uv sync --all-extras --frozen
+      - name: Check API and repository connectivity
+        env:
+          NZ_LEGISLATION_API_KEY: ${{ secrets.NZ_LEGISLATION_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO_ID: ${{ vars.HF_REPO_ID }}
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+          ZENODO_API_URL: https://sandbox.zenodo.org/api
+          ARCHIVE_CREATORS_JSON: ${{ vars.ARCHIVE_CREATORS_JSON }}
+        run: |
+          set -euo pipefail
+          uv run nzlc doctor --network

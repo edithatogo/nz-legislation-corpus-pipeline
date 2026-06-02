@@ -1,0 +1,127 @@
+name: Hugging Face live sync
+
+on:
+  schedule:
+    - cron: "17 14 * * *" # daily, safely outside NZ midnight API reset rush
+  workflow_dispatch:
+    inputs:
+      latest_only:
+        description: "Only sync latest matching version for discovered works"
+        type: boolean
+        default: false
+      max_works:
+        description: "Optional smoke-test limit"
+        type: string
+        default: ""
+      min_seconds_between_requests:
+        description: "Optional request spacing override in seconds"
+        type: string
+        default: ""
+
+concurrency:
+  group: hf-sync-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          uv sync --all-extras --frozen
+
+      - name: Doctor
+        env:
+          NZ_LEGISLATION_API_KEY: ${{ secrets.NZ_LEGISLATION_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO_ID: ${{ vars.HF_REPO_ID }}
+          ARCHIVE_CREATORS_JSON: ${{ vars.ARCHIVE_CREATORS_JSON }}
+        run: |
+          set -euo pipefail
+          uv run nzlc doctor
+
+      - name: Restore current live corpus from Hugging Face
+        continue-on-error: true
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO_ID: ${{ vars.HF_REPO_ID }}
+        run: |
+          set -euo pipefail
+          uv run hf download "$HF_REPO_ID" --repo-type dataset --local-dir data
+
+      - name: Sync corpus from NZ Legislation API
+        env:
+          NZ_LEGISLATION_API_KEY: ${{ secrets.NZ_LEGISLATION_API_KEY }}
+          NZLC_SEARCH_TERMS: ${{ vars.NZLC_SEARCH_TERMS }}
+          NZLC_SEARCH_FIELD: ${{ vars.NZLC_SEARCH_FIELD || 'title' }}
+          NZLC_SEARCH_SORT_BY: ${{ vars.NZLC_SEARCH_SORT_BY || 'most_recently_updated' }}
+          NZLC_LEGISLATION_TYPES: ${{ vars.NZLC_LEGISLATION_TYPES }}
+          NZLC_LEGISLATION_STATUS: ${{ vars.NZLC_LEGISLATION_STATUS }}
+          NZLC_PUBLISHER: ${{ vars.NZLC_PUBLISHER }}
+          NZLC_OUTPUT_DIR: data
+        run: |
+          set -euo pipefail
+          args=()
+          if [ "${{ github.event.inputs.latest_only || 'false' }}" = "true" ]; then args+=(--latest-only); fi
+          if [ -n "${{ github.event.inputs.max_works || '' }}" ]; then args+=(--max-works "${{ github.event.inputs.max_works }}"); fi
+          if [ -n "${{ github.event.inputs.min_seconds_between_requests || '' }}" ]; then
+            export NZLC_MIN_SECONDS_BETWEEN_REQUESTS="${{ github.event.inputs.min_seconds_between_requests }}"
+          fi
+          uv run nzlc sync "${args[@]}"
+
+      - name: Validate corpus
+        env:
+          NZLC_OUTPUT_DIR: data
+        run: |
+          set -euo pipefail
+          uv run nzlc validate
+
+      - name: Build manifest
+        env:
+          NZLC_OUTPUT_DIR: data
+          HF_REPO_ID: ${{ vars.HF_REPO_ID }}
+        run: |
+          set -euo pipefail
+          uv run nzlc manifest
+          uv run nzlc coverage-report
+
+      - name: Upload to Hugging Face Dataset
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO_ID: ${{ vars.HF_REPO_ID }}
+          NZLC_OUTPUT_DIR: data
+          HF_XET_HIGH_PERFORMANCE: "1"
+        run: |
+          set -euo pipefail
+          uv run nzlc hf-upload
+
+      - name: Step summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## NZ Legislation corpus sync" >> "$GITHUB_STEP_SUMMARY"
+          if [ -f data/_state/sync_state.json ]; then
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat data/_state/sync_state.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f data/manifests/latest_changes.json ]; then
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat data/manifests/latest_changes.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          fi

@@ -1,0 +1,130 @@
+name: Annual Zenodo archive
+
+on:
+  schedule:
+    # Scheduled annual run creates a production Zenodo draft, not a publication.
+    - cron: "0 1 1 1 *"
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Snapshot year. Defaults to current UTC year."
+        type: string
+        required: false
+        default: ""
+      use_sandbox:
+        description: "Use Zenodo sandbox API for manual tests"
+        type: boolean
+        default: true
+      publish:
+        description: "Publish the Zenodo draft. Keep false until reviewed."
+        type: boolean
+        default: false
+
+concurrency:
+  group: annual-zenodo-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    # Scheduled runs create production Zenodo drafts; manual sandbox runs use the sandbox environment.
+    # Publication still requires publish=true and should be protected by the zenodo-production environment.
+    environment: ${{ (github.event_name != 'workflow_dispatch' || inputs.use_sandbox == false) && 'zenodo-production' || 'zenodo-sandbox' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          uv sync --all-extras --frozen
+
+      - name: Resolve archive settings
+        id: settings
+        run: |
+          set -euo pipefail
+          YEAR="${{ inputs.year || '' }}"
+          if [ -z "$YEAR" ]; then YEAR="$(date -u +%Y)"; fi
+
+          PROD_URL="${{ vars.ZENODO_API_URL || 'https://zenodo.org/api' }}"
+          SANDBOX_URL="${{ vars.ZENODO_SANDBOX_API_URL || 'https://sandbox.zenodo.org/api' }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.use_sandbox || false }}" = "true" ]; then
+            ZENODO_API_URL="$SANDBOX_URL"
+            ZENODO_ENV="sandbox"
+          else
+            ZENODO_API_URL="$PROD_URL"
+            ZENODO_ENV="production-draft"
+          fi
+
+          PUBLISH="${{ inputs.publish || false }}"
+          echo "year=$YEAR" >> "$GITHUB_OUTPUT"
+          echo "zenodo_api_url=$ZENODO_API_URL" >> "$GITHUB_OUTPUT"
+          echo "zenodo_env=$ZENODO_ENV" >> "$GITHUB_OUTPUT"
+          echo "publish=$PUBLISH" >> "$GITHUB_OUTPUT"
+
+      - name: Download live corpus from Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO_ID: ${{ vars.HF_REPO_ID }}
+        run: |
+          set -euo pipefail
+          uv run hf download "$HF_REPO_ID" --repo-type dataset --local-dir data
+
+      - name: Validate downloaded corpus
+        env:
+          NZLC_OUTPUT_DIR: data
+        run: |
+          set -euo pipefail
+          uv run nzlc validate
+          uv run nzlc manifest
+          uv run nzlc coverage-report
+
+      - name: Build annual archive
+        env:
+          NZLC_OUTPUT_DIR: data
+        run: |
+          set -euo pipefail
+          uv run nzlc archive --year "${{ steps.settings.outputs.year }}" --output-dir dist/archive
+
+      - name: Upload Zenodo draft
+        env:
+          # Prefer environment-scoped ZENODO_TOKEN. Repository-level fallback also works.
+          ZENODO_TOKEN: ${{ secrets.ZENODO_TOKEN }}
+          ZENODO_DEPOSITION_ID: ${{ vars.ZENODO_DEPOSITION_ID }}
+          ARCHIVE_CREATORS_JSON: ${{ vars.ARCHIVE_CREATORS_JSON }}
+          ARCHIVE_TITLE: ${{ vars.ARCHIVE_TITLE }}
+          ARCHIVE_LICENSE: ${{ vars.ARCHIVE_LICENSE || 'cc-by-4.0' }}
+          HF_REPO_ID: ${{ vars.HF_REPO_ID }}
+          ZENODO_API_URL: ${{ steps.settings.outputs.zenodo_api_url }}
+        run: |
+          set -euo pipefail
+          args=(--year "${{ steps.settings.outputs.year }}" --archive-dir dist/archive)
+          if [ "${{ steps.settings.outputs.publish }}" = "true" ]; then args+=(--publish); fi
+          uv run nzlc zenodo-upload "${args[@]}"
+
+      - name: Step summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## Annual Zenodo archive" >> "$GITHUB_STEP_SUMMARY"
+          echo "Environment: ${{ steps.settings.outputs.zenodo_env }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Year: ${{ steps.settings.outputs.year }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "Publish requested: ${{ steps.settings.outputs.publish }}" >> "$GITHUB_STEP_SUMMARY"
+          ls -lh dist/archive >> "$GITHUB_STEP_SUMMARY" || true
+          for f in dist/archive/*.SHA256SUMS.txt; do
+            [ -e "$f" ] || continue
+            echo '```text' >> "$GITHUB_STEP_SUMMARY"
+            cat "$f" >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          done

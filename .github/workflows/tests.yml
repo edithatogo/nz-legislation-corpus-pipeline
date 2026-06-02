@@ -1,0 +1,40 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          uv sync --all-extras --frozen
+      - name: Validate shell scripts
+        run: |
+          set -euo pipefail
+          bash -n scripts/*.sh
+      - name: Run tests
+        run: |
+          set -euo pipefail
+          uv run pytest -q
+      - name: Fixture smoke corpus
+        env:
+          NZLC_OUTPUT_DIR: data
+          ARCHIVE_CREATORS_JSON: '[{"name":"Test Maintainer"}]'
+        run: |
+          set -euo pipefail
+          uv run nzlc smoke-fixture --output-dir data
+          uv run nzlc validate
+          uv run nzlc manifest
+          uv run nzlc coverage-report

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<legislation>
+  <title>Sample Act 2026</title>
+  <body>
+    <section>
+      <num>1</num>
+      <heading>Purpose</heading>
+      <para>This Act is a tiny fixture for pipeline testing.</para>
+    </section>
+  </body>
+</legislation>
