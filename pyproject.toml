@@ -25,6 +25,11 @@ dev = [
   "mypy>=1.10.0",
   "pre-commit>=4.0.0",
 ]
+embeddings = [
+  "FlagEmbedding>=1.2.0",
+  "torch>=2.0.0",
+  "transformers>=4.30.0",
+]
 
 [project.scripts]
 nzlc = "nz_legislation_corpus.cli:app"

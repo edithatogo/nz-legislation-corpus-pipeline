@@ -98,6 +98,7 @@ def sync(
     max_works: Annotated[int | None, typer.Option(help="Limit work discovery for smoke tests.")] = None,
     allow_no_search_terms: Annotated[bool, typer.Option(help="Allow no search terms if seed work IDs are supplied.")] = False,
     replace: Annotated[bool, typer.Option(help="Replace existing records instead of merging into records.jsonl.")] = False,
+    embeddings: Annotated[bool, typer.Option(help="Generate dense, sparse, and ColBERT embeddings for each record using BAAI/bge-m3.")] = False,
 ) -> None:
     """Fetch legislation metadata/content, normalize records, and write JSONL + Parquet."""
     settings = Settings.from_env()
@@ -155,6 +156,18 @@ def sync(
                 record["raw_content_path"] = raw_path.relative_to(settings.output_dir).as_posix()
             previous_hash = known_versions.get(record["stable_id"])
             prior_record = existing_records.get(record["stable_id"])
+            
+            has_changed = (previous_hash is None) or (previous_hash != record["source_hash"])
+            if embeddings and has_changed and record.get("text"):
+                try:
+                    from .embeddings import compute_all_three_embeddings
+                    emb = compute_all_three_embeddings(record["text"])
+                    record["embedding_dense"] = emb["dense"]
+                    record["embedding_sparse"] = json.dumps(emb["lexical_weights"])
+                    record["embedding_colbert"] = emb["colbert_multivector"]
+                except Exception as emb_exc:
+                    stats.warnings.append(f"Failed to generate embeddings for {record['stable_id']}: {emb_exc}")
+
             if previous_hash is None:
                 stats.records_added += 1
                 records.append(record)
