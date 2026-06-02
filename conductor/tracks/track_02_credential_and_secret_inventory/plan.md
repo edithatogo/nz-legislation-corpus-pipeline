@@ -1,7 +1,7 @@
 # Plan - Credential And Secret Inventory
 
 ## Tasks
-- [ ] Confirm `NZ_LEGISLATION_API_KEY` exists and can call the NZ Legislation API.
+- [x] Confirm `NZ_LEGISLATION_API_KEY` exists and can call the NZ Legislation API.
 - [ ] Confirm `HF_TOKEN` exists and has write access only to the intended Hugging Face dataset repository where possible.
 - [ ] Confirm `HF_REPO_ID` is final.
 - [ ] Confirm `ZENODO_TOKEN` exists for sandbox first.
@@ -12,7 +12,7 @@
 
 ## Current blocker
 
-- Required credential values are not present in the local environment.
+- `NZ_LEGISLATION_API_KEY` was supplied by the user and validated process-locally without writing the value to repo files.
+- `HF_TOKEN`, final `HF_REPO_ID`, `ZENODO_TOKEN`, and archive creator metadata are not present in the local environment.
 - The isolated repository has no GitHub remote, so `gh secret list` and secret/variable writes cannot resolve a target repository.
-- Base-repo cross-check did not locate an existing `NZ_LEGISLATION_API_KEY`: the likely base GitHub repo `edithatogo/nz-legislation` has no matching repo-level or environment-level secret/variable.
-- VUW Outlook search found PCO API announcement and acknowledgement threads but did not locate an issued key value.
+- GitHub secret/variable writes for the validated NZ API key remain blocked until the target GitHub repository or remote is configured.

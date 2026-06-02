@@ -19,14 +19,16 @@ confirm all credentials and GitHub variables required for live corpus operations
 ## Evidence Recorded
 
 - Local credential presence check on 2026-06-02:
-  - `NZ_LEGISLATION_API_KEY`: absent.
+  - `NZ_LEGISLATION_API_KEY`: supplied by user for process-local validation; value not written to repo files.
   - `HF_TOKEN`: absent.
   - `HF_REPO_ID`: absent.
   - `ZENODO_TOKEN`: absent.
   - `ARCHIVE_CREATORS_JSON`: absent.
   - Optional search/archive variables checked in the local environment: absent.
 - Local `nzlc doctor` result:
-  - `NZ_LEGISLATION_API_KEY`: warning, not configured.
+  - Initial local-only run before key supply reported `NZ_LEGISLATION_API_KEY`: warning, not configured.
+  - Process-local network run after key supply reported `NZ_LEGISLATION_API_KEY`: true.
+  - NZ API reachable with one-row sample search; `sample total=19670`.
   - `HF_REPO_ID`: warning, not configured.
   - `HF_TOKEN`: warning, not configured.
   - `ZENODO_TOKEN`: warning, not configured.
@@ -60,9 +62,7 @@ confirm all credentials and GitHub variables required for live corpus operations
 
 ## Blocked Items
 
-- Cannot confirm live NZ Legislation API access until `NZ_LEGISLATION_API_KEY` is supplied.
-- Base-repo checks did not locate an existing `NZ_LEGISLATION_API_KEY`.
-- VUW Outlook checks found API announcement and acknowledgement threads, but no issued key value.
+- `NZ_LEGISLATION_API_KEY` has been supplied and validated process-locally, but it is not stored in GitHub secrets yet.
 - Cannot confirm Hugging Face write access until `HF_TOKEN` and final `HF_REPO_ID` are supplied.
 - Cannot confirm Zenodo sandbox access until `ZENODO_TOKEN` is supplied.
 - Cannot store GitHub secrets or variables until a GitHub remote/repository is configured.
