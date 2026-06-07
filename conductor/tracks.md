@@ -540,7 +540,11 @@ Evidence to record:
 Current evidence:
 
 - No Git remote is configured, so the final GitHub repository URL, branch protection summary, enabled security settings, and CI run URL cannot be recorded yet.
-- `scripts/configure_github_hardening.sh` now attempts repo defaults, Dependabot vulnerability alerts, secret scanning, push protection, Dependabot security updates, branch protection, and a required tests status check.
+- GitHub repository URL: `https://github.com/edithatogo/nz-legislation-corpus-pipeline`.
+- Branch protection summary: `main` requires strict `tests`, one approving review, admin enforcement, linear history, no force pushes, and no deletions.
+- Enabled security settings: Dependabot security updates, secret scanning, and push protection.
+- First passing CI run: baseline `Tests` run `27087158077` and `CodeQL` run `27087158073` passed on 2026-06-07.
+- Remaining blocker: Scorecard workflow fix must be merged through branch protection before the next Scorecard run can pass.
 - `.gitignore` excludes generated corpus/archive/cache paths including `data/`, `dist/`, `.hf_cache/`, and `.track15-smoke/`; no tracked files exist under generated corpus/archive paths.
 - `SECURITY.md`, `CONTRIBUTING.md`, `.github/CODEOWNERS`, pull request template, issue templates, Dependabot config, CodeQL, Scorecard, tests, doctor, Hugging Face sync, and annual Zenodo workflows are present.
 - Workflow permissions are minimum-scoped for local review: `contents: read` by default, with `security-events: write`/`id-token: write` only on CodeQL/Scorecard SARIF publication.

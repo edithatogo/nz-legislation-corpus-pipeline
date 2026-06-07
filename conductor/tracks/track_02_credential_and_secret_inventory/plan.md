@@ -7,12 +7,14 @@
 - [ ] Confirm `ZENODO_TOKEN` exists for sandbox first.
 - [x] Decide whether production Zenodo uses a separate token and required reviewer environment.
 - [ ] Store GitHub secrets: `NZ_LEGISLATION_API_KEY`, `HF_TOKEN`, and `ZENODO_TOKEN`.
-- [ ] Store GitHub variables: `HF_REPO_ID`, `NZLC_SEARCH_TERMS`, `NZLC_SEARCH_FIELD`, `NZLC_SEARCH_SORT_BY`, `NZLC_LEGISLATION_TYPES`, `ARCHIVE_CREATORS_JSON`, and archive metadata.
+- [x] Store GitHub variables: `HF_REPO_ID`, `NZLC_SEARCH_TERMS`, `NZLC_SEARCH_FIELD`, `NZLC_SEARCH_SORT_BY`, `NZLC_LEGISLATION_TYPES`, `ARCHIVE_CREATORS_JSON`, and archive metadata.
 - [x] Run `uv run nzlc doctor` locally or through GitHub Actions.
 
 ## Current blocker
 
 - `NZ_LEGISLATION_API_KEY` was supplied by the user and validated process-locally without writing the value to repo files.
-- `HF_TOKEN`, final `HF_REPO_ID`, `ZENODO_TOKEN`, and archive creator metadata are not present in the local environment.
-- The isolated repository has no GitHub remote, so `gh secret list` and secret/variable writes cannot resolve a target repository.
-- GitHub secret/variable writes for the validated NZ API key remain blocked until the target GitHub repository or remote is configured.
+- GitHub repository created and remote configured: `https://github.com/edithatogo/nz-legislation-corpus-pipeline`.
+- GitHub variables are configured, including corrected `ARCHIVE_CREATORS_JSON=[{"name":"edithatogo"}]`.
+- `HF_TOKEN`, `ZENODO_TOKEN`, and `NZ_LEGISLATION_API_KEY` are not present in the current local environment and were not written to GitHub secrets.
+- `HF_REPO_ID` is configured as a GitHub variable: `edithatogo/nz-legislation-corpus`.
+- Live Hugging Face and Zenodo access remain blocked until tokens are supplied.
