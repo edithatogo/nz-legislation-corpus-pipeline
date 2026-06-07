@@ -139,7 +139,21 @@ For deterministic bootstraps, use seed work IDs:
 uv run nzlc sync --seed-work-ids seeds/work_ids.txt
 ```
 
+For first-bootstrap batching, resume, disk budget, and cleanup rules, see `docs/runtime_capacity_runbook.md`.
+
 Search-based discovery is useful, but do not claim complete coverage until it is reconciled against a seed inventory or official bulk source.
+
+## Coverage, licensing, and citation
+
+Current coverage status: not proven complete. The pipeline is API-first and currently search-based unless a provenance-backed `seeds/work_ids.txt`, official inventory, or documented reconciliation is supplied.
+
+The repository code is licensed under this repository's code license. The legislation text and source material are not relicensed by this project. The official NZ Legislation copyright page should be treated as the source for Crown copyright and attribution terms for legislation website material. Incorporated-by-reference material, third-party material, agency website text, logos, emblems, and non-legislative linked content may have separate rights or restrictions.
+
+For live/current use, cite the Hugging Face dataset repository together with the manifest hash from `data/manifests/latest_manifest.json`. For academic or fixed-version citation, cite the annual Zenodo DOI snapshot once available.
+
+For downstream querying and field definitions, see `docs/researcher_quickstart.md` and `docs/data_dictionary.md`.
+For validation gates, schema versioning, warning severity, and coverage history, see `docs/schema_governance.md`.
+For the public launch gate and release-note template, see `docs/public_launch_decision.md` and `docs/public_launch_release_note.md`.
 
 ## Annual Zenodo archive
 
@@ -183,7 +197,7 @@ Annually:
 
 ## Caveats
 
-This implementation is conservative. It uses the official API first, but complete corpus coverage may require a curated seed list or official bulk inventory if there is no complete modified-since endpoint. Legislation may have special copyright status, but incorporated-by-reference material and non-legislative website content can differ; verify licensing before public release.
+This implementation is conservative. It uses the official API first, but complete corpus coverage may require a curated seed list or official bulk inventory if there is no complete modified-since endpoint. Verify source licensing, attribution, and third-party material before redistribution or public release.
 
 ## Hugging Face setup shortcut
 

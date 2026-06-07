@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import json
 import logging
 from typing import Any
 
@@ -54,10 +53,7 @@ def compute_all_three_embeddings(text: str) -> dict[str, Any]:
     )
     
     dense = output['dense_embeds'][0]
-    if hasattr(dense, 'tolist'):
-        dense = dense.tolist()
-    else:
-        dense = list(dense)
+    dense = dense.tolist() if hasattr(dense, 'tolist') else list(dense)
     
     # Sparse weights are returned as dict format {token_id: weight} or similar depending on the FlagEmbedding version
     # Convert token weights to simple dictionary mapping string to float

@@ -4,6 +4,7 @@ import hashlib
 import json
 import re
 from collections.abc import Iterable
+from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
@@ -88,7 +89,14 @@ def write_text_if_changed(path: Path, text: str) -> bool:
         return False
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(text, encoding="utf-8")
-    tmp.replace(path)
+    try:
+        tmp.replace(path)
+    except PermissionError:
+        # OneDrive-backed Windows worktrees can sporadically deny os.replace even
+        # for repo-local temp files. Preserve progress rather than failing a sync.
+        path.write_text(text, encoding="utf-8")
+        with suppress(PermissionError):
+            tmp.unlink(missing_ok=True)
     return True
 
 

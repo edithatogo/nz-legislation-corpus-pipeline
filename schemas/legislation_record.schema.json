@@ -5,6 +5,7 @@
   "type": "object",
   "required": [
     "stable_id",
+    "record_schema_version",
     "work_id",
     "version_id",
     "title",
@@ -24,6 +25,7 @@
     "pipeline_version"
   ],
   "properties": {
+    "record_schema_version": {"const": "1.0"},
     "stable_id": {"type": "string", "minLength": 1},
     "work_id": {"type": "string"},
     "version_id": {"type": "string"},

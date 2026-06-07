@@ -6,6 +6,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from .schema import RECORD_SCHEMA_ID, RECORD_SCHEMA_VERSION
 from .utils import sha256_file, sha256_text, utc_now_iso, write_json
 
 _EXCLUDED_DIRS = {".git", ".hg", ".svn", "__pycache__", ".pytest_cache", ".ruff_cache", ".mypy_cache", "cache"}
@@ -76,6 +77,8 @@ def build_manifest(root_dir: Path, *, manifest_path: Path | None = None) -> dict
     payload = {
         "schema_version": "1.1",
         "pipeline_schema": "nzlc-manifest-v1",
+        "record_schema": RECORD_SCHEMA_ID,
+        "record_schema_version": RECORD_SCHEMA_VERSION,
         "generated_at_utc": utc_now_iso(),
         "pipeline_version": os.getenv("GITHUB_SHA", "local-dev"),
         "github_repository": os.getenv("GITHUB_REPOSITORY", ""),

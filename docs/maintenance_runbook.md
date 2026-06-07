@@ -5,18 +5,22 @@
 1. Check the `Non-destructive service doctor` workflow.
 2. Check the latest `Hugging Face live sync` summary.
 3. Merge safe Dependabot PRs after tests pass.
+4. Before any public launch or release note, review `docs/public_launch_decision.md`.
 
 ## Monthly
 
 1. Review `coverage_report.json` in the Hugging Face dataset repo.
 2. Run a manual sync with `max_works=20` if the daily sync has been mostly no-op.
 3. Confirm Hugging Face upload skipped when content did not change.
+4. Run the full reconciliation procedure in `docs/reconciliation_runbook.md` after the first full bootstrap is available.
+5. Review `docs/runtime_capacity_runbook.md` before any large manual sync or bootstrap rerun.
 
 ## Quarterly
 
 1. Review the NZ Legislation API docs for endpoint/rate-limit changes.
 2. Refresh or reconcile `seeds/work_ids.txt` if available.
 3. Review schema changes and deprecation warnings.
+4. Review `docs/schema_governance.md` before accepting any schema or validation-severity change.
 
 ## Annual Zenodo archive
 

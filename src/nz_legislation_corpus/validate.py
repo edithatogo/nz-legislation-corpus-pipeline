@@ -7,10 +7,12 @@ from typing import Any
 
 from jsonschema import Draft202012Validator
 
+from .schema import RECORD_SCHEMA_VERSION
 from .utils import read_jsonl, sha256_text, write_json
 
 REQUIRED_FIELDS = [
     "stable_id",
+    "record_schema_version",
     "work_id",
     "version_id",
     "title",
@@ -59,6 +61,16 @@ def validate_records(
         for field in REQUIRED_FIELDS:
             if field not in record or record.get(field) in {None, ""}:
                 errors.append({"type": "missing_required_field", "row": idx, "field": field})
+        if record.get("record_schema_version") != RECORD_SCHEMA_VERSION:
+            errors.append(
+                {
+                    "type": "record_schema_version_mismatch",
+                    "row": idx,
+                    "stable_id": record.get("stable_id"),
+                    "expected": RECORD_SCHEMA_VERSION,
+                    "actual": record.get("record_schema_version"),
+                }
+            )
         if not allow_empty_text and not str(record.get("text", "")).strip():
             errors.append({"type": "empty_text", "row": idx, "stable_id": record.get("stable_id")})
         expected_hash = sha256_text(str(record.get("text", "")))
@@ -66,14 +78,19 @@ def validate_records(
             errors.append({"type": "text_hash_mismatch", "row": idx, "stable_id": record.get("stable_id")})
         if not record.get("xml_url"):
             warnings.append({"type": "missing_xml_url", "row": idx, "stable_id": record.get("stable_id")})
+        if record.get("id_is_ephemeral"):
+            warnings.append({"type": "ephemeral_identifier", "row": idx, "stable_id": record.get("stable_id")})
         if validator:
             for err in validator.iter_errors(record):
                 errors.append({"type": "schema_error", "row": idx, "path": list(err.path), "message": err.message})
 
     report = {
         "schema_version": "1.0",
+        "record_schema_version": RECORD_SCHEMA_VERSION,
         "records_path": str(records_path),
         "record_count": len(records),
+        "blocking_error_types": sorted({error["type"] for error in errors}),
+        "informational_warning_types": sorted({warning["type"] for warning in warnings}),
         "errors": errors,
         "warnings": warnings,
         "ok": not errors,

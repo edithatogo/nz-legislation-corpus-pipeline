@@ -1,7 +1,7 @@
 # Spec - Public Launch Decision
 
 ## Status
-todo
+blocked
 
 ## Goal
 make a deliberate launch decision after the corpus, automation, metadata, and maintenance loop are all proven.
@@ -16,3 +16,10 @@ make a deliberate launch decision after the corpus, automation, metadata, and ma
 - Hugging Face revision.
 - GitHub release or tag.
 - Final launch checklist.
+
+## Current Evidence
+- Launch date: not assigned; current decision is `do not launch yet`.
+- Hugging Face revision: blocked until the live dataset is published or verified.
+- GitHub release or tag: blocked because no final GitHub remote is configured.
+- Final launch checklist: `docs/public_launch_decision.md`.
+- Draft release note: `docs/public_launch_release_note.md`.

@@ -1,7 +1,7 @@
 # Spec - Conservative Live Smoke Sync
 
 ## Status
-todo
+blocked
 
 ## Goal
 prove the live sync path against external services without risking rate limits or large uploads.
@@ -16,3 +16,26 @@ prove the live sync path against external services without risking rate limits o
 - Command summaries.
 - Synced work count.
 - Any API warnings from sync state.
+
+## Evidence Recorded
+
+- Local environment presence check on 2026-06-07:
+  - `NZ_LEGISLATION_API_KEY`: absent.
+  - `NZLC_MIN_SECONDS_BETWEEN_REQUESTS`: absent.
+  - `NZLC_OUTPUT_DIR`: absent.
+- Seed inventory check on 2026-06-07:
+  - `seeds/work_ids.txt`: absent.
+  - `seeds/work_ids.txt.example` and `seeds/work_ids.example.txt`: present as examples only.
+- Local data check on 2026-06-07:
+  - `data/`: absent.
+- Local doctor command on 2026-06-07:
+  - Command: `uv run --no-cache nzlc doctor`.
+  - `NZ_LEGISLATION_API_KEY`: warning, not configured.
+  - `output_dir`: `data`.
+- Live sync command was not run because it would not prove the external path without a configured API key and seed file.
+
+## Blocked Items
+
+- Cannot run `uv run nzlc sync --seed-work-ids seeds/work_ids.txt --max-works 5` until `NZ_LEGISLATION_API_KEY` is configured.
+- Cannot prove five-or-fewer seed works are synced exactly as requested until an authoritative `seeds/work_ids.txt` exists.
+- Cannot generate live validation, manifest, coverage, or sync-state evidence until the conservative live sync succeeds.

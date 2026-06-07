@@ -70,7 +70,7 @@ Evidence to record:
 
 ## Track 03 - Hugging Face Dataset Shell
 
-Status: `todo`
+Status: `blocked`
 
 Goal: create and verify the Hugging Face dataset repository before uploading corpus data.
 
@@ -94,9 +94,16 @@ Evidence to record:
 - Root layout listing.
 - Dataset card revision or commit hash.
 
+Current blocker:
+
+- `HF_REPO_ID` is not configured in the local environment.
+- `HF_TOKEN` is not configured in the local environment.
+- Public search/open checks on 2026-06-07 did not confirm an existing public `edithatogo/nz-legislation-corpus` dataset shell.
+- The repository shell cannot be created, confirmed writable, or inspected for layout until the final Hugging Face dataset ID and a write-capable token are supplied.
+
 ## Track 04 - Source Discovery Completeness
 
-Status: `todo`
+Status: `blocked`
 
 Goal: establish the discovery method needed before the project can claim a complete corpus.
 
@@ -121,9 +128,15 @@ Evidence to record:
 - Work ID count.
 - Reconciliation notes and unresolved gaps.
 
+Current blocker:
+
+- Public NZ Legislation API and developer documentation checked on 2026-06-07 describe search-oriented endpoints but did not identify a complete work-ID export or bulk inventory endpoint.
+- No authoritative `seeds/work_ids.txt` exists in this repository.
+- Public docs now distinguish API-first pipeline readiness from proven corpus completeness.
+
 ## Track 05 - Conservative Live Smoke Sync
 
-Status: `todo`
+Status: `blocked`
 
 Goal: prove the live sync path against external services without risking rate limits or large uploads.
 
@@ -149,9 +162,15 @@ Evidence to record:
 - Synced work count.
 - Any API warnings from sync state.
 
+Current blocker:
+
+- `NZ_LEGISLATION_API_KEY` is not configured in the local environment.
+- `seeds/work_ids.txt` does not exist; only example seed files are present.
+- No live smoke sync was run because it would fail before proving the intended external API path.
+
 ## Track 06 - First Hugging Face Smoke Upload
 
-Status: `todo`
+Status: `blocked`
 
 Goal: prove upload, restore, and no-change behavior on Hugging Face with the small smoke corpus.
 
@@ -175,9 +194,15 @@ Evidence to record:
 - Manifest hash before and after no-change upload.
 - Sample Parquet read result.
 
+Current blocker:
+
+- `HF_TOKEN` and `HF_REPO_ID` are not configured in the local environment.
+- `data/` is absent, so there is no smoke corpus or manifest to upload.
+- Track 05 has not produced a conservative live smoke corpus yet.
+
 ## Track 07 - Full Corpus Bootstrap Download
 
-Status: `todo`
+Status: `blocked`
 
 Goal: download the full corpus into local `data/` using the proven discovery method and conservative pacing.
 
@@ -206,9 +231,16 @@ Evidence to record:
 - Final manifest hash.
 - Coverage report path.
 
+Current blocker:
+
+- `NZ_LEGISLATION_API_KEY`, `HF_TOKEN`, and `HF_REPO_ID` are not configured in the local environment.
+- `seeds/work_ids.txt` does not exist, so there is no proven full-corpus seed inventory to attempt.
+- `data/` is absent, and Tracks 05 and 06 have not produced or uploaded a smoke corpus.
+- Local `C:` free space checked on 2026-06-07: 19,907,948,544 bytes free; final adequacy cannot be confirmed until expected corpus/archive size is known.
+
 ## Track 08 - Full Hugging Face Corpus Upload
 
-Status: `todo`
+Status: `blocked`
 
 Goal: publish the full validated corpus to Hugging Face as the live operational dataset.
 
@@ -234,9 +266,16 @@ Evidence to record:
 - Manifest hash.
 - Re-download verification result.
 
+Current blocker:
+
+- `HF_TOKEN`, `HF_REPO_ID`, and `HF_XET_HIGH_PERFORMANCE` are not configured in the local environment.
+- `data/`, `data/manifests/latest_manifest.json`, and `data/parquet/` are absent, so there is no full validated corpus to upload.
+- Track 07 has not produced the full bootstrap corpus yet.
+- The upload helper defaults `HF_XET_HIGH_PERFORMANCE=1` during upload, but no upload was attempted because required credentials and corpus data are absent.
+
 ## Track 09 - GitHub Scheduled Hugging Face Sync
 
-Status: `todo`
+Status: `blocked`
 
 Goal: make GitHub Actions the normal maintenance loop for the Hugging Face live corpus.
 
@@ -262,9 +301,16 @@ Evidence to record:
 - Workflow inputs used.
 - Latest successful scheduled run URL.
 
+Current blocker:
+
+- `.github/workflows/hf_sync.yml` exists locally and includes schedule, manual dispatch inputs, Hugging Face restore, sync, upload, and step-summary sections.
+- No Git remote is configured, so there is no target GitHub repository/default branch to inspect or dispatch.
+- `GITHUB_REPOSITORY`, `GH_TOKEN`, `NZ_LEGISLATION_API_KEY`, `HF_TOKEN`, and `HF_REPO_ID` are not configured in the local environment.
+- Tracks 02, 05, 07, and 08 remain blocked, so the workflow cannot yet prove smoke, full, scheduled, or no-change behavior.
+
 ## Track 10 - Maintenance Doctor And Alerting
 
-Status: `todo`
+Status: `blocked`
 
 Goal: surface token, API, and dependency failures before they affect the live corpus.
 
@@ -288,9 +334,16 @@ Evidence to record:
 - Notification destination.
 - Any follow-up alerting issue.
 
+Current blocker:
+
+- `.github/workflows/doctor.yml` exists locally and is scheduled weekly, but no Git remote is configured, so it cannot be confirmed enabled on the default branch.
+- Local non-network `uv run --no-cache nzlc doctor` runs without creating `data/`, but live network doctor cannot pass until Track 02 secrets and variables are configured.
+- Dependabot, CodeQL, and OpenSSF Scorecard configurations exist locally.
+- GitHub Actions notification delivery cannot be confirmed until the repository exists and a workflow run has completed.
+
 ## Track 11 - Monthly Full Reconciliation
 
-Status: `todo`
+Status: `blocked`
 
 Goal: keep the corpus complete over time, not only during the first bootstrap.
 
@@ -314,9 +367,16 @@ Evidence to record:
 - Added or removed work IDs.
 - Coverage deltas.
 
+Current blocker:
+
+- `docs/reconciliation_runbook.md` now documents the monthly cadence and procedure.
+- `seeds/work_ids.txt` is absent, so seed changes cannot be reviewed or applied.
+- `data/manifests/coverage_report.json` is absent, so coverage deltas cannot be compared.
+- Tracks 04, 07, 08, and 09 remain blocked, so no full corpus or scheduled maintenance loop exists yet to reconcile.
+
 ## Track 12 - Zenodo Sandbox Archive
 
-Status: `todo`
+Status: `blocked`
 
 Goal: prove annual immutable archiving without publishing to production.
 
@@ -340,9 +400,16 @@ Evidence to record:
 - Archive filename and checksum.
 - Workflow run URL if performed in GitHub Actions.
 
+Current blocker:
+
+- `ZENODO_TOKEN`, `ZENODO_API_URL`, `ARCHIVE_CREATORS_JSON`, and `HF_REPO_ID` are not configured in the local environment.
+- `data/` is absent, so there is no corpus available to archive.
+- `dist/archive` is absent, so there are no archive, manifest, or checksum files to upload.
+- The Zenodo client deletes duplicate-named draft files before upload, but duplicate replacement cannot be verified without a sandbox draft and token.
+
 ## Track 13 - Protected Production Zenodo Archive
 
-Status: `todo`
+Status: `blocked`
 
 Goal: publish annual DOI snapshots only after explicit approval.
 
@@ -367,9 +434,16 @@ Evidence to record:
 - DOI.
 - Commit updating citation files.
 
+Current blocker:
+
+- No Git remote is configured, so the `zenodo-production` GitHub environment and required reviewers cannot be verified live.
+- `ZENODO_TOKEN`, `ZENODO_API_URL`, `ZENODO_DEPOSITION_ID`, `ARCHIVE_CREATORS_JSON`, `GITHUB_REPOSITORY`, `GH_TOKEN`, and `HF_REPO_ID` are not configured in the local environment.
+- Track 12 sandbox archive has not passed, so production archive work must not proceed.
+- `.github/workflows/annual_zenodo_archive.yml` routes production draft/publication runs through `zenodo-production` and keeps `publish=false` by default, but no production draft or DOI exists yet.
+
 ## Track 14 - Legal, Citation, And Dataset Wording
 
-Status: `todo`
+Status: `blocked`
 
 Goal: keep public statements accurate about corpus coverage, licensing, and incorporated-by-reference material.
 
@@ -393,9 +467,16 @@ Evidence to record:
 - Reviewer notes.
 - Metadata commit SHA.
 
+Current blocker:
+
+- Reviewed `README.md`, `DATASET_CARD.md`, `CITATION.cff`, and Hugging Face dataset-card generation in `scripts/init_huggingface_dataset.py`.
+- Public wording now states coverage is not proven complete, separates code licensing from source-content reuse status, and distinguishes live Hugging Face citation from fixed Zenodo citation.
+- Official NZ Legislation copyright/disclosure pages checked on 2026-06-07 support Crown copyright / Creative Commons attribution wording, with separate caution retained for third-party or non-legislative material.
+- Track remains blocked for final metadata commit SHA because the broader Conductor changes are not committed yet and live Hugging Face/Zenodo metadata cannot be verified.
+
 ## Track 15 - Downstream Researcher Usability
 
-Status: `todo`
+Status: `blocked`
 
 Goal: make the published corpus easy to inspect and query after the live hub is stable.
 
@@ -418,22 +499,29 @@ Evidence to record:
 - Sample dataset path or revision.
 - Documentation links.
 
+Current blocker:
+
+- Added `docs/researcher_quickstart.md` with DuckDB `hf://` examples, local PyArrow examples, and sample split policy.
+- Added `docs/data_dictionary.md` from `schemas/legislation_record.schema.json`.
+- `README.md` and `DATASET_CARD.md` now link to downstream researcher documentation.
+- Live Hugging Face query output, sample dataset path/revision, and optional browser UI remain blocked until Tracks 03 and 08 publish the dataset.
+
 ## Track 16 - GitHub Repository Hardening
 
-Status: `todo`
+Status: `blocked`
 
 Goal: make the GitHub repository safe to operate as the automation controller for the live Hugging Face corpus.
 
 Actions:
 
-- Create or confirm the final GitHub repository.
-- Push the code-only repository without `data/`, `dist/`, cache directories, or generated corpus files.
-- Enable branch protection on the default branch.
-- Require the tests workflow before merge once CI is stable.
-- Enable secret scanning and push protection where available.
-- Enable Dependabot alerts and dependency update PRs.
-- Confirm `CODEOWNERS`, issue templates, pull request template, security policy, and contribution docs are present if the repo is public.
-- Confirm workflows have minimum permissions and do not expose secrets in logs.
+- Create or confirm the final GitHub repository. Blocked: no Git remote is configured.
+- Push the code-only repository without `data/`, `dist/`, cache directories, or generated corpus files. Blocked until the final GitHub repository exists.
+- Enable branch protection on the default branch. Blocked until the final GitHub repository exists.
+- Require the tests workflow before merge once CI is stable. Blocked until branch protection/rulesets can be applied on GitHub.
+- Enable secret scanning and push protection where available. Blocked until GitHub repository settings are available.
+- Enable Dependabot alerts and dependency update PRs. Dependency update PR configuration is present in `.github/dependabot.yml`; live alert enablement is scripted but blocked until GitHub repository settings are available.
+- Confirm `CODEOWNERS`, issue templates, pull request template, security policy, and contribution docs are present if the repo is public. Done locally.
+- Confirm workflows have minimum permissions and do not expose secrets in logs. Done locally.
 
 Acceptance criteria:
 
@@ -449,21 +537,29 @@ Evidence to record:
 - Enabled security settings.
 - First passing CI run URL.
 
+Current evidence:
+
+- No Git remote is configured, so the final GitHub repository URL, branch protection summary, enabled security settings, and CI run URL cannot be recorded yet.
+- `scripts/configure_github_hardening.sh` now attempts repo defaults, Dependabot vulnerability alerts, secret scanning, push protection, Dependabot security updates, branch protection, and a required tests status check.
+- `.gitignore` excludes generated corpus/archive/cache paths including `data/`, `dist/`, `.hf_cache/`, and `.track15-smoke/`; no tracked files exist under generated corpus/archive paths.
+- `SECURITY.md`, `CONTRIBUTING.md`, `.github/CODEOWNERS`, pull request template, issue templates, Dependabot config, CodeQL, Scorecard, tests, doctor, Hugging Face sync, and annual Zenodo workflows are present.
+- Workflow permissions are minimum-scoped for local review: `contents: read` by default, with `security-events: write`/`id-token: write` only on CodeQL/Scorecard SARIF publication.
+
 ## Track 17 - Runtime Capacity, Batching, And Resume
 
-Status: `todo`
+Status: `blocked`
 
 Goal: make the full corpus bootstrap and recurring sync practical under local disk, GitHub Actions runtime, API rate limits, and upload interruption constraints.
 
 Actions:
 
-- Estimate disk required for raw files, normalized records, Parquet, manifests, and annual archive staging.
-- Decide whether first full bootstrap runs locally, on GitHub Actions, or on another controlled runner.
-- Define batch size and pacing defaults for first full sync.
-- Confirm sync state is preserved between batches.
-- Confirm interrupted Hugging Face uploads can resume without corrupting the remote dataset.
-- Add an operator note for cleaning local generated data safely after upload and verification.
-- Record the fallback plan if the full bootstrap exceeds GitHub Actions timeout.
+- Estimate disk required for raw files, normalized records, Parquet, manifests, and annual archive staging. Done in `docs/runtime_capacity_runbook.md`.
+- Decide whether first full bootstrap runs locally, on GitHub Actions, or on another controlled runner. Done: first full bootstrap should run on a controlled local or self-hosted runner.
+- Define batch size and pacing defaults for first full sync. Done in `docs/runtime_capacity_runbook.md`.
+- Confirm sync state is preserved between batches. Done with `tests/test_sync_resume.py`.
+- Confirm interrupted Hugging Face uploads can resume without corrupting the remote dataset. Blocked until `HF_TOKEN`, `HF_REPO_ID`, and a live dataset are available.
+- Add an operator note for cleaning local generated data safely after upload and verification. Done in `docs/runtime_capacity_runbook.md`.
+- Record the fallback plan if the full bootstrap exceeds GitHub Actions timeout. Done in `docs/runtime_capacity_runbook.md`.
 
 Acceptance criteria:
 
@@ -478,20 +574,27 @@ Evidence to record:
 - Batch size and pacing values.
 - Resume test result.
 
+Current evidence:
+
+- Disk estimate documented in `docs/runtime_capacity_runbook.md`: reserve at least 25 GB free for the expected 6 GB class corpus, preferably 50 GB when archive staging or embeddings share the runner.
+- Chosen runner documented: controlled local or self-hosted first bootstrap, then GitHub Actions for daily/latest maintenance after first verified upload.
+- Batch defaults documented: 5-work smoke at 1.0 seconds pacing, 50-work pilot at 1.0 seconds, 250-work seed chunks at 0.5 seconds, and 500-1000 work chunks at 0.2 seconds only after throttle-free earlier batches.
+- Resume behavior tested locally in `tests/test_sync_resume.py`; live Hugging Face interrupted-upload proof remains blocked until `HF_TOKEN`, `HF_REPO_ID`, and a live dataset are available.
+
 ## Track 18 - Data Quality And Schema Governance
 
-Status: `todo`
+Status: `blocked`
 
 Goal: prevent silent schema drift or degraded corpus quality after the first public upload.
 
 Actions:
 
-- Define minimum validation checks required before upload.
-- Define which validation warnings block upload and which are informational.
-- Add or confirm fixture coverage for representative XML, HTML, missing-text, missing-format, and ephemeral-ID cases.
-- Version the record schema explicitly before public release.
-- Document how schema changes are migrated or announced.
-- Track data-quality metrics from `coverage_report.json` over time.
+- Define minimum validation checks required before upload. Done.
+- Define which validation warnings block upload and which are informational. Done.
+- Add or confirm fixture coverage for representative XML, HTML, missing-text, missing-format, and ephemeral-ID cases. Done.
+- Version the record schema explicitly before public release. Done: `record_schema_version = "1.0"`.
+- Document how schema changes are migrated or announced. Done in `docs/schema_governance.md`.
+- Track data-quality metrics from `coverage_report.json` over time. Done via `data/manifests/coverage_history.jsonl`.
 
 Acceptance criteria:
 
@@ -507,20 +610,28 @@ Evidence to record:
 - Fixture list.
 - Coverage baseline.
 
+Current evidence:
+
+- Schema version: `record_schema_version = "1.0"`.
+- Validation report path: `data/manifests/validation_report.json`.
+- Fixture list: `tests/fixtures/sample_legislation.xml`, `tests/fixtures/sample_legislation.html`, plus validation tests for missing text, missing XML URL, missing source format/metadata-only content, and ephemeral identifiers.
+- Coverage metrics are written to `data/manifests/coverage_report.json` and appended to `data/manifests/coverage_history.jsonl`.
+- Live coverage baseline remains blocked until Track 07/08 produce and publish the real corpus.
+
 ## Track 19 - Public Launch Decision
 
-Status: `todo`
+Status: `blocked`
 
 Goal: make a deliberate launch decision after the corpus, automation, metadata, and maintenance loop are all proven.
 
 Actions:
 
-- Confirm Tracks 01 through 14 are done or explicitly waived.
-- Confirm Hugging Face contains the full intended live corpus or clearly labels the dataset as partial.
-- Confirm GitHub scheduled sync is enabled and has passed after the first upload.
-- Confirm Zenodo sandbox archive has passed.
-- Confirm public README, dataset card, and citation files match the actual coverage state.
-- Create a release note summarizing coverage, caveats, update cadence, and archival plan.
+- Confirm Tracks 01 through 14 are done or explicitly waived. Blocked: Tracks 02-14 still have unresolved blockers.
+- Confirm Hugging Face contains the full intended live corpus or clearly labels the dataset as partial. Blocked until Track 03/08 publish or confirm the live dataset.
+- Confirm GitHub scheduled sync is enabled and has passed after the first upload. Blocked until Track 09 runs on a configured GitHub repository.
+- Confirm Zenodo sandbox archive has passed. Blocked until Track 12 passes.
+- Confirm public README, dataset card, and citation files match the actual coverage state. Done for current prelaunch state.
+- Create a release note summarizing coverage, caveats, update cadence, and archival plan. Done as draft template.
 
 Acceptance criteria:
 
@@ -534,3 +645,11 @@ Evidence to record:
 - Hugging Face revision.
 - GitHub release or tag.
 - Final launch checklist.
+
+Current evidence:
+
+- Launch date: not assigned; current decision is `do not launch yet`.
+- Hugging Face revision: blocked until the live dataset is published or verified.
+- GitHub release or tag: blocked because no final GitHub remote is configured.
+- Final launch checklist: `docs/public_launch_decision.md`.
+- Draft release note: `docs/public_launch_release_note.md`.

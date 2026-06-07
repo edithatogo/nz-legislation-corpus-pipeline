@@ -1,7 +1,7 @@
 # Spec - Runtime Capacity, Batching, And Resume
 
 ## Status
-todo
+blocked
 
 ## Goal
 make the full corpus bootstrap and recurring sync practical under local disk, GitHub Actions runtime, API rate limits, and upload interruption constraints.
@@ -16,3 +16,9 @@ make the full corpus bootstrap and recurring sync practical under local disk, Gi
 - Chosen runner.
 - Batch size and pacing values.
 - Resume test result.
+
+## Current Evidence
+- Disk estimate documented in `docs/runtime_capacity_runbook.md`: reserve at least 25 GB free for the expected 6 GB class corpus, preferably 50 GB when archive staging or embeddings share the runner.
+- Chosen runner documented: controlled local or self-hosted first bootstrap, then GitHub Actions for daily/latest maintenance after first verified upload.
+- Batch defaults documented: 5-work smoke at 1.0 seconds pacing, 50-work pilot at 1.0 seconds, 250-work seed chunks at 0.5 seconds, and 500-1000 work chunks at 0.2 seconds only after throttle-free earlier batches.
+- Resume behavior tested locally in `tests/test_sync_resume.py`; live Hugging Face interrupted-upload proof remains blocked until `HF_TOKEN`, `HF_REPO_ID`, and a live dataset are available.

@@ -66,7 +66,7 @@ def main() -> int:
 
     # {pretty_name}
 
-    This dataset repository is the live operational home for an evolving New Zealand legislation corpus.
+    This dataset repository is the live operational home for an evolving New Zealand legislation corpus pipeline. Coverage is not proven complete until reconciled against an authoritative inventory.
 
     It is intended to be populated by the `nz-legislation-corpus-pipeline` GitHub Actions workflow, which uses the official New Zealand Legislation API, validates and normalizes records, writes stable partitioned Parquet, and publishes annual DOI-backed archival snapshots to Zenodo.
 
@@ -104,13 +104,13 @@ def main() -> int:
 
     ## Citation and archiving
 
-    This live repository may change over time. For formal academic or legal citation, cite the annual Zenodo snapshot once published.
+    This live repository may change over time. For live use, cite this Hugging Face dataset URL, access date, and the manifest hash. For formal academic or fixed-version citation, cite the annual Zenodo snapshot once published.
 
     Annual Zenodo DOI: {zenodo_placeholder}
 
     ## Legal and licensing caveat
 
-    New Zealand legislation generally has special public-access status, but incorporated-by-reference materials, third-party content, annotations, and some linked resources may have separate rights. Verify licensing and source terms before downstream redistribution or commercial use.
+    The source repository code is licensed separately. This dataset card does not relicense legislation text or third-party source material. Check the official New Zealand Legislation copyright page for Crown copyright and attribution terms. Incorporated-by-reference materials, third-party content, agency website text, logos, emblems, and non-legislative linked resources may have separate rights or restrictions. Verify licensing and source terms before downstream redistribution or commercial use.
 
     ## Maintainer notes
 
@@ -130,8 +130,8 @@ def main() -> int:
     dataset_infos = dedent(f"""\
     {{
       "{repo_id.split('/')[-1]}": {{
-        "description": "Live New Zealand legislation corpus maintained by an automated API-first pipeline.",
-        "citation": "Cite the annual Zenodo snapshot for fixed-version academic/legal references.",
+        "description": "Live New Zealand legislation corpus pipeline maintained by an automated API-first workflow. Coverage is not proven complete until reconciled against an authoritative inventory.",
+        "citation": "For live use, cite the Hugging Face dataset URL, access date, and manifest hash. Cite the annual Zenodo snapshot for fixed-version academic/legal references once available.",
         "homepage": "https://huggingface.co/datasets/{repo_id}",
         "license": "other"
       }}

@@ -6,6 +6,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from .extract_text import extract_text_best_effort
+from .schema import RECORD_SCHEMA_VERSION
 from .utils import sha256_bytes, sha256_text
 
 
@@ -63,6 +64,7 @@ def normalize_version_record(
     id_ephemeral_reason = "contains ~ segment per NZ Legislation API identifier rules" if id_is_ephemeral else ""
     now = datetime.now(UTC).replace(microsecond=0)
     record = {
+        "record_schema_version": RECORD_SCHEMA_VERSION,
         "stable_id": stable_id,
         "work_id": work_id,
         "version_id": version_id,

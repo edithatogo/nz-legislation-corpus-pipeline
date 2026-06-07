@@ -16,7 +16,7 @@ pretty_name: New Zealand Legislation Corpus
 
 ## Summary
 
-This dataset contains machine-readable New Zealand legislation records collected through the official New Zealand Legislation API and published as optimized Parquet shards for live use.
+This dataset is intended to contain machine-readable New Zealand legislation records collected through the official New Zealand Legislation API and published as optimized Parquet shards for live use. Coverage is not yet proven complete.
 
 ## Source provenance
 
@@ -24,7 +24,7 @@ Records include source URLs, API URLs, format URLs, hashes, scrape timestamps, a
 
 ## Data fields
 
-Core fields include:
+Core fields are documented in `docs/data_dictionary.md`. They include:
 
 - `stable_id`
 - `work_id`
@@ -51,9 +51,9 @@ Core fields include:
 
 ## Limitations
 
-- Corpus completeness depends on the configured discovery strategy.
+- Corpus completeness is not yet proven. The current API-first pipeline depends on the configured discovery strategy, and search-based discovery must be reconciled against an authoritative inventory before any full-coverage claim.
 - Text extraction is intentionally conservative and may not preserve all legal structure.
-- Incorporated-by-reference material may not be included or may have different rights.
+- Incorporated-by-reference material, third-party material, agency website text, logos, emblems, and non-legislative linked content may not be included or may have different rights.
 - This dataset is not legal advice.
 
 ## Loading examples
@@ -86,8 +86,8 @@ The live Hugging Face dataset is intended for daily or regular updates. DOI-back
 
 ## Citation
 
-Use the annual Zenodo DOI for academic citation once available. For live use, cite the Hugging Face repository and the manifest hash.
+Use the annual Zenodo DOI for academic or fixed-version citation once available. For live use, cite the Hugging Face repository, access date, and the manifest hash from `manifests/latest_manifest.json`.
 
-## Legal caveat
+## Licensing and legal caveat
 
-Check the New Zealand Legislation copyright page and your own institution's policies before redistributing or relying on the dataset. This dataset is provided for information and research support, not legal advice.
+The code that builds this dataset is licensed separately in the source repository. This dataset card does not relicense legislation text or third-party source material. Check the official New Zealand Legislation copyright page and your own institution's policies before redistributing or relying on the dataset. This dataset is provided for information and research support, not legal advice.

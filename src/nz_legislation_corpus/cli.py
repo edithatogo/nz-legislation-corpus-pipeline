@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
 from pathlib import Path
@@ -14,6 +15,7 @@ from .manifest import build_change_report, build_manifest
 from .normalize import normalize_version_record
 from .nz_api import NZLegislationClient
 from .parquet_writer import write_partitioned_parquet
+from .schema import RECORD_SCHEMA_VERSION
 from .types import SyncStats
 from .utils import (
     read_json,
@@ -245,6 +247,16 @@ def hf_upload_cmd(
     settings = Settings.from_env()
     repo_id = require(settings.hf_repo_id, "HF_REPO_ID")
     token = require(settings.hf_token, "HF_TOKEN")
+    validation = validate_records(
+        settings.records_jsonl_path,
+        schema_path=Path("schemas/legislation_record.schema.json"),
+        report_path=settings.manifests_dir / "validation_report.json",
+    )
+    if not validation["ok"]:
+        raise RuntimeError(
+            "Blocking validation failures prevent Hugging Face upload; "
+            f"see {settings.manifests_dir / 'validation_report.json'}"
+        )
     create_dataset_repo_if_needed(repo_id, token=token, private=private)
     local_manifest = read_json(settings.manifests_dir / "latest_manifest.json", default=None)
     if not local_manifest:
@@ -375,6 +387,7 @@ def coverage_report_cmd() -> None:
             ephemeral_ids += 1
     report = {
         "schema_version": "1.0",
+        "record_schema_version": RECORD_SCHEMA_VERSION,
         "record_count": len(records),
         "by_type": dict(sorted(by_type.items())),
         "by_status": dict(sorted(by_status.items())),
@@ -387,6 +400,10 @@ def coverage_report_cmd() -> None:
         "recommendation": "Use a seed work-id list or official bulk source before claiming corpus completeness." if records else "No records found.",
     }
     write_json(settings.manifests_dir / "coverage_report.json", report)
+    history_path = settings.manifests_dir / "coverage_history.jsonl"
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    with history_path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(report, sort_keys=True, ensure_ascii=False) + "\n")
     console.print_json(data=report)
 
 

@@ -18,6 +18,7 @@ archive/
 .hf_cache/
 .pytest-tmp/
 test-tmp/
+.track15-smoke/
 
 # OS / editor
 .DS_Store

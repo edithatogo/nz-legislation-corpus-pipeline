@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "Please cite the annual Zenodo snapshot DOI when using this corpus in academic work."
+message: "For fixed-version academic use, cite the annual Zenodo snapshot DOI once available. For live use, cite the Hugging Face dataset URL, access date, and manifest hash."
 title: "New Zealand Legislation Corpus"
 version: "0.1.0"
 authors:
@@ -8,4 +8,4 @@ authors:
 date-released: "2026-01-01"
 repository-code: "https://github.com/REPLACE-ME/nz-legislation-corpus-pipeline"
 url: "https://huggingface.co/datasets/REPLACE-ME/nz-legislation-corpus"
-abstract: "API-first, Hugging Face/Xet-backed New Zealand legislation corpus with annual Zenodo snapshots."
+abstract: "API-first, Hugging Face/Xet-backed New Zealand legislation corpus pipeline. Coverage is not proven complete until reconciled against an authoritative inventory. Annual Zenodo snapshots provide fixed-version citation once published."

@@ -2,6 +2,8 @@
 
 Use this directory for deterministic corpus bootstrapping. Search-based discovery is useful but should not be treated as proof of full coverage. A curated work-ID seed list lets the pipeline re-fetch versions deterministically.
 
+There is no authoritative `seeds/work_ids.txt` in this repository yet. The checked-in seed files are examples only unless explicitly replaced with a provenance-backed inventory.
+
 Run with:
 
 ```bash
