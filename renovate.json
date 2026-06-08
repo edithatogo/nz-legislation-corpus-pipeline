@@ -1,0 +1,54 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":dependencyDashboard",
+    ":semanticCommitsDisabled"
+  ],
+  "timezone": "Australia/Sydney",
+  "schedule": ["before 7am on monday"],
+  "branchPrefix": "renovate/",
+  "labels": ["dependencies"],
+  "automerge": false,
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  "rangeStrategy": "update-lockfile",
+  "enabledManagers": ["github-actions", "pep621", "pre-commit"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 7am on monday"],
+    "commitMessageAction": "Refresh",
+    "prBodyNotes": [
+      "Lockfile maintenance must pass `uv run pytest -q` before merge."
+    ]
+  },
+  "packageRules": [
+    {
+      "description": "Group low-risk GitHub Actions updates.",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "groupName": "GitHub Actions minor and patch updates"
+    },
+    {
+      "description": "Group normal Python runtime and development dependency updates.",
+      "matchManagers": ["pep621"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "Python minor and patch updates"
+    },
+    {
+      "description": "Review embedding stack updates separately because they affect optional heavy ML installs.",
+      "matchManagers": ["pep621"],
+      "matchPackageNames": ["FlagEmbedding", "torch", "transformers"],
+      "groupName": "Embedding dependency updates"
+    },
+    {
+      "description": "Group pre-commit hook updates.",
+      "matchManagers": ["pre-commit"],
+      "groupName": "pre-commit hook updates"
+    }
+  ],
+  "prBodyNotes": [
+    "Before merging, run the checks from `.github/pull_request_template.md`.",
+    "Dependency updates must not upload to Hugging Face or publish to Zenodo."
+  ]
+}
