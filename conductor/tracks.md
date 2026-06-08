@@ -547,7 +547,7 @@ Current evidence:
 - Remaining blocker: Scorecard workflow fix must be merged through branch protection before the next Scorecard run can pass.
 - `.gitignore` excludes generated corpus/archive/cache paths including `data/`, `dist/`, `.hf_cache/`, and `.track15-smoke/`; no tracked files exist under generated corpus/archive paths.
 - `SECURITY.md`, `CONTRIBUTING.md`, `.github/CODEOWNERS`, pull request template, issue templates, Dependabot config, CodeQL, Scorecard, tests, doctor, Hugging Face sync, and annual Zenodo workflows are present.
-- Workflow permissions are minimum-scoped for local review: `contents: read` by default, with `security-events: write`/`id-token: write` only on CodeQL/Scorecard SARIF publication.
+- Workflow permissions are minimum-scoped for local review: `contents: read` by default, with `security-events: write` only where `codeql.yml` and `scorecard.yml` upload SARIF.
 
 ## Track 17 - Runtime Capacity, Batching, And Resume
 

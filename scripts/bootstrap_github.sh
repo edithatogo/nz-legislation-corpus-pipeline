@@ -164,7 +164,8 @@ if [[ "$PROTECT_PRODUCTION" == "true" ]]; then
     echo "Configured zenodo-production with the authenticated user as required reviewer."
   else
     echo "Could not configure required reviewers automatically; created zenodo-production without reviewer rules." >&2
-    gh api --method PUT "repos/$FULL_REPO/environments/zenodo-production" -f wait_timer=0 >/dev/null || true
+    printf '{"wait_timer":0}' \
+      | gh api --method PUT "repos/$FULL_REPO/environments/zenodo-production" --input - >/dev/null || true
   fi
 else
   printf '{"wait_timer":0}' \
