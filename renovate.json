@@ -12,7 +12,7 @@
   "automerge": false,
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
-  "rangeStrategy": "bump",
+  "rangeStrategy": "update-lockfile",
   "enabledManagers": ["github-actions", "pep621", "pre-commit"],
   "lockFileMaintenance": {
     "enabled": true,

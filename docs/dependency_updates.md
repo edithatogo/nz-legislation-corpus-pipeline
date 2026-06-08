@@ -15,6 +15,8 @@ repository settings.
 Renovate PRs are intentionally conservative:
 
 - no automerge;
+- lockfile-first updates so package minimum constraints are not raised without
+  review;
 - low-risk minor and patch updates are grouped;
 - major updates remain separate;
 - optional embedding dependencies are grouped separately because they can pull
