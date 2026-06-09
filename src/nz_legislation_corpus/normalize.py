@@ -23,9 +23,9 @@ def _derive_year(version: dict[str, Any]) -> int | None:
         version.get("date"),
         version.get("as_at_date"),
         version.get("publication_date"),
-        version.get("title"),
         version.get("version_id"),
         version.get("work_id"),
+        version.get("title"),
     ]
     for candidate in candidates:
         if not candidate:
