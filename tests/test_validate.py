@@ -77,6 +77,21 @@ def test_ephemeral_identifier_flagged():
     assert "~" in record["id_ephemeral_reason"]
 
 
+def test_year_prefers_structured_identifier_over_title_target_year():
+    record = normalize_version_record(
+        {
+            "title": "Climate Change Response (2050 Target and Other Matters) Amendment Act 2025",
+            "version_id": "act_public_2025_80_en_2025-12-16",
+            "work_id": "act_public_2025_80",
+            "legislation_status": "in_force",
+            "legislation_type": "act",
+            "formats": [],
+        }
+    )
+
+    assert record["year"] == 2025
+
+
 def test_validate_ephemeral_identifier_is_informational(tmp_path: Path):
     xml = Path("tests/fixtures/sample_legislation.xml").read_bytes()
     record = normalize_version_record(
