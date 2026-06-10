@@ -265,13 +265,43 @@ jobs:
           echo "## Historical Hugging Face upload" >> "$GITHUB_STEP_SUMMARY"
           echo "- Workflow: manual only" >> "$GITHUB_STEP_SUMMARY"
           echo "- Upload confirmed: ${{ inputs.upload_confirmed }}" >> "$GITHUB_STEP_SUMMARY"
-          if [ -f "$HISTORICAL_OUTPUT_DIR/_state/sync_state.json" ]; then
-            echo '```json' >> "$GITHUB_STEP_SUMMARY"
-            cat "$HISTORICAL_OUTPUT_DIR/_state/sync_state.json" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
-          if [ -f "$HISTORICAL_OUTPUT_DIR/manifests/latest_manifest.json" ]; then
-            echo '```json' >> "$GITHUB_STEP_SUMMARY"
-            cat "$HISTORICAL_OUTPUT_DIR/manifests/latest_manifest.json" >> "$GITHUB_STEP_SUMMARY"
-            echo '```' >> "$GITHUB_STEP_SUMMARY"
-          fi
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          import os
+          from pathlib import Path
+
+          output_dir = Path(os.environ["HISTORICAL_OUTPUT_DIR"])
+          state_path = output_dir / "_state" / "sync_state.json"
+          manifest_path = output_dir / "manifests" / "latest_manifest.json"
+
+          if state_path.exists():
+              state = json.loads(state_path.read_text(encoding="utf-8"))
+              stats = dict(state.get("last_stats", {}))
+              warnings = list(stats.pop("warnings", []) or [])
+              summary = {
+                  "last_stats": stats,
+                  "warning_count": len(warnings),
+                  "warning_sample": warnings[:20],
+                  "records_changed_on_disk": state.get("records_changed_on_disk"),
+              }
+              print("\n### Sync state")
+              print("```json")
+              print(json.dumps(summary, indent=2, sort_keys=True))
+              print("```")
+
+          if manifest_path.exists():
+              manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+              summary_keys = [
+                  "schema_version",
+                  "record_schema_version",
+                  "record_count",
+                  "content_sha256",
+                  "manifest_sha256",
+                  "generated_at",
+              ]
+              summary = {key: manifest.get(key) for key in summary_keys if key in manifest}
+              print("\n### Manifest")
+              print("```json")
+              print(json.dumps(summary, indent=2, sort_keys=True))
+              print("```")
+          PY
