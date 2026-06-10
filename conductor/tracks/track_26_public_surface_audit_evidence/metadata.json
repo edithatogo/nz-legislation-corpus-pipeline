@@ -1,0 +1,8 @@
+﻿{
+  "track_id": "track_26_public_surface_audit_evidence",
+  "type": "chore",
+  "status": "todo",
+  "created_at": "2026-06-09T00:00:00Z",
+  "updated_at": "2026-06-09T00:00:00Z",
+  "description": "Create an evidence ledger for GitHub, Hugging Face, Zenodo, OSF, and future metadata surfaces."
+}

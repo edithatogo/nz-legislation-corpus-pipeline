@@ -26,3 +26,17 @@ first-run:
 
 security-note:
 	@echo "Configure GitHub environment required reviewers for zenodo-production before production publish."
+
+.PHONY: quality format-check type-check
+
+quality:
+	uv run ruff check src/nz_legislation_corpus tests
+	uv run ruff format --check src/nz_legislation_corpus tests
+	uv run mypy src/nz_legislation_corpus
+	uv run pytest -q
+
+format-check:
+	uv run ruff format --check src/nz_legislation_corpus tests
+
+type-check:
+	uv run mypy src/nz_legislation_corpus

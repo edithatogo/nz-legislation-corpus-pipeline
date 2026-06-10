@@ -86,3 +86,7 @@ dist/archive/
 2. API search coverage,
 3. an official bulk export, or
 4. a reconciliation of the above.
+
+## Zenodraft requirement
+
+Future Zenodo draft/archive workflow changes should use or formally evaluate https://github.com/zenodraft/zenodraft. Use sandbox first, validate .zenodo.json metadata, map tokens to ZENODO_ACCESS_TOKEN or ZENODO_SANDBOX_ACCESS_TOKEN only inside the relevant CI step, and keep publish commands behind protected reviewer approval.

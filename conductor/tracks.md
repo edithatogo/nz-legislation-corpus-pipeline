@@ -817,3 +817,115 @@ Current evidence:
   records the workflow contract.
 - `conductor/tracks/track_23_manual_historical_upload_workflow/plan.md`
   records the implementation and local verification state.
+
+## Track 24 - Corpus Family Naming And Publication Alignment
+
+Status: `todo`
+
+Goal: adopt `corpus-nz-legislation` as the preferred systematic label and align GitHub, Hugging Face, Zenodo, OSF, and future metadata environments with sibling `corpus-nz-hansard`.
+
+Actions:
+
+- Record naming preference in Conductor setup and corpus-family docs.
+- Audit GitHub, Hugging Face, Zenodo, OSF, and future metadata environments.
+- Cross-reference `C:\Users\60217257\OneDrive - Flinders\repos\corpus-nz-hansard`.
+- Preserve existing public URLs until a migration plan protects citations and redirects.
+
+Acceptance criteria:
+
+- Requirements, design, Mermaid diagrams, and environment tasks exist.
+- Track directory contains spec and plan.
+- Public-surface alignment includes GitHub, Hugging Face, Zenodo, OSF, and future metadata.
+
+Link: `conductor/tracks/track_24_corpus_family_naming_and_publication_alignment/`
+
+## Track 25 - Cross Corpus Interoperability And Metadata
+
+Status: `todo`
+
+Goal: adopt applicable Hansard interoperability and SOTA metadata roadmap patterns for legislation researcher artifacts and metadata endpoints.
+
+Actions:
+
+- Review Hansard search/RAG, RDF, Akoma Ntoso, and metadata endpoint tracks.
+- Define optional legislation DuckDB/search/RAG and metadata artifacts.
+- Keep derived artifacts validated, versioned, and optional.
+
+Acceptance criteria:
+
+- Roadmap covers DuckDB/search/RAG, Croissant, RO-Crate, Frictionless, DCAT/PROV-O, and Akoma Ntoso considerations.
+- Track directory contains spec and plan.
+- No base dependency expansion happens without a future implementation track.
+
+Link: `conductor/tracks/track_25_cross_corpus_interoperability_and_metadata/`
+
+## track 26 public surface audit evidence
+
+Status: `todo`
+
+Goal: Create an evidence ledger for GitHub, Hugging Face, Zenodo, OSF, and future metadata surfaces.
+
+Link: `conductor/tracks/track_26_public_surface_audit_evidence/`
+
+
+## track 27 zenodo rights metadata and zenodraft workflow
+
+Status: `todo`
+
+Goal: Harmonise Zenodo rights metadata and migrate/evaluate draft operations through zenodraft.
+
+Link: `conductor/tracks/track_27_zenodo_rights_metadata_and_zenodraft_workflow/`
+
+
+## track 28 github repository name migration assessment
+
+Status: `todo`
+
+Goal: Assess safe migration or reservation of the preferred corpus-nz-legislation GitHub name.
+
+Link: `conductor/tracks/track_28_github_repository_name_migration_assessment/`
+
+
+## track 29 shared nz corpus core schema
+
+Status: `todo`
+
+Goal: Define shared core fields and compatibility expectations across legislation and Hansard.
+
+Link: `conductor/tracks/track_29_shared_nz_corpus_core_schema/`
+
+
+## track 30 sota metadata packages
+
+Status: `todo`
+
+Goal: Generate validated Croissant, RO-Crate, Frictionless, DCAT, and PROV-O metadata packages.
+
+Link: `conductor/tracks/track_30_sota_metadata_packages/`
+
+
+## track 31 bleeding edge versioning release automation
+
+Status: `todo`
+
+Goal: Implement SemVer/dataset/schema version governance, Release Please-style changelog automation, and consistency checks.
+
+Link: `conductor/tracks/track_31_bleeding_edge_versioning_release_automation/`
+
+
+## track 32 sota cicd code quality rust tooling
+
+Status: `todo`
+
+Goal: Adopt SOTA CI/code-quality automation using Rust-backed tools where possible: uv, ruff, typos, zizmor, taplo, plus actionlint.
+
+Link: `conductor/tracks/track_32_sota_cicd_code_quality_rust_tooling/`
+
+
+## track 33 artifact provenance attestations
+
+Status: `todo`
+
+Goal: Add release evidence ledgers, GitHub artifact attestations or SLSA-style provenance, and signed/checksummed artifact policy.
+
+Link: `conductor/tracks/track_33_artifact_provenance_attestations/`

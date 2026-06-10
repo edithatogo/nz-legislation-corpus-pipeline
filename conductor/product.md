@@ -51,3 +51,16 @@ annual archive snapshots on Zenodo.
 - External publishing steps depend on API credentials and should stay
   non-destructive by default.
 - The pipeline must remain safe to rerun in CI and on a maintainer workstation.
+
+## Corpus family naming and sibling alignment
+
+Preferred systematic project label: `corpus-nz-legislation`.
+
+Sibling corpus label: `corpus-nz-hansard`.
+
+Agents should use these labels in new roadmap, requirements, design, and environment-planning documents. Existing published URLs must remain stable unless a dedicated migration track verifies redirects, citations, DOI metadata, Hugging Face dataset references, and release notes.
+
+
+## Versioning, CI/CD, and provenance target
+
+The product target is a SOTA, evidence-backed automation system: SemVer for package/CLI behaviour, independent dataset and schema versions, manifest-hash release evidence, Hugging Face revision tracking, Zenodo DOI snapshots, protected production publication, and artifact attestations or SLSA-style provenance for release outputs.
