@@ -40,4 +40,3 @@ format-check:
 
 type-check:
 	uv run mypy src/nz_legislation_corpus
-

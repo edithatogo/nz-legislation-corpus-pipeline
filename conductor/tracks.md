@@ -929,4 +929,3 @@ Status: `todo`
 Goal: Add release evidence ledgers, GitHub artifact attestations or SLSA-style provenance, and signed/checksummed artifact policy.
 
 Link: `conductor/tracks/track_33_artifact_provenance_attestations/`
-
