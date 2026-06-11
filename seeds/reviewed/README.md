@@ -60,3 +60,22 @@ external reconciliation.
 Do not claim completeness from this seed. It is the third deterministic batch
 from a search-derived candidate inventory that still requires authoritative or
 external reconciliation.
+
+## `historical-work-ids-0004.txt`
+
+- Source candidate: GitHub Actions run `27313765016`.
+- Source artifact: `historical-work-id-discovery`.
+- Source candidate SHA-256:
+  `6f70fa9b596be2baa77bd885df1857e9b89c04013361c9ad80af722b0cc8493b`.
+- Batch index: 4 of 68.
+- Batch size: 500 work IDs.
+- First work ID: `act_local_1934_11`.
+- Last work ID: `act_local_1968_8`.
+- Canonical line-normalized batch SHA-256:
+  `1de0612f3822d575469a67baeb7d1d06d4cce6c635485ab85f5cbf3ad7d0f183`.
+- Intended use: no-upload validation through `historical_hf_upload.yml` before
+  any confirmed incremental historical upload.
+
+Do not claim completeness from this seed. It is the fourth deterministic batch
+from a search-derived candidate inventory that still requires authoritative or
+external reconciliation.
