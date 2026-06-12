@@ -1,7 +1,7 @@
 # Spec - Full Corpus Bootstrap Download
 
 ## Status
-blocked
+in_progress
 
 ## Goal
 download the full corpus into local `data/` using the proven discovery method and conservative pacing.
@@ -30,6 +30,6 @@ download the full corpus into local `data/` using the proven discovery method an
 
 ## Remaining Tasks
 
-- Run remaining 68 historical batches through the no-upload → review → confirmed-upload cycle.
+- Run remaining 68 historical batches through the no-upload â†’ review â†’ confirmed-upload cycle.
 - Run full live corpus sync after historical batches are verified.
 - Review validation, manifest, coverage evidence for each batch.

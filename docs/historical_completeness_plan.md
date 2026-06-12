@@ -176,6 +176,11 @@ Review the artifact:
 - failed-version warnings;
 - record counts by type, status, and year.
 
+If you need to review multiple batches without using the laptop, use
+`.github/workflows/historical_batch_review.yml` to fan out reviewed batch
+validation jobs across GitHub-hosted runners. Keep confirmed Hugging Face
+uploads on the serial `historical_hf_upload.yml` workflow.
+
 Current no-upload batch evidence:
 
 - GitHub Actions run:

@@ -60,3 +60,12 @@
 - Validation/manifest/coverage completed for 6,384 restored/merged records.
 - Historical Hugging Face revision after upload:
   `0cc4021cae106c0b9ae3722488faed21df3e578c`.
+
+
+## Implementation automation added 2026-06-12
+
+- Added `.github/workflows/full_corpus_bootstrap.yml` with manual batch splitting, disk-budget enforcement, HF restore, staged `nzlc sync`, validation, manifest, coverage-report, and artifact evidence.
+- See `docs/full_corpus_operations.md` for the operator inputs and review
+  sequence for this workflow.
+- Parallel mode supports reviewed batch evidence; `serial=true` preserves one cumulative `data/` directory on a sufficiently large runner.
+- Track remains `in_progress` until a full seed sync run produces and records final evidence.
