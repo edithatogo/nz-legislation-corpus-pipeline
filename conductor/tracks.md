@@ -1174,3 +1174,22 @@ Evidence:
 - Smoke test directory: `tests/smoke/` (2 full CLI pipeline tests).
 - Coverage configured with `fail_under = 60` in `pyproject.toml`.
 - Pytest markers (unit, integration, smoke, hypothesis) registered and applied across all test files.
+
+## track 35 multi-git and multi-archive mirroring setup
+
+Status: `in_progress`
+
+Goal: Establish multi-git and multi-archive mirroring setup to prevent single-point-of-failure repository/dataset takedowns.
+
+Link: `conductor/tracks/track_35_multi_git_and_multi_archive_mirroring_setup/`
+
+Evidence:
+- Git mirror workflow configured: `.github/workflows/mirror_sync.yml`.
+- Mirror workflow locally linted with `actionlint` and hardened to skip when mirror secrets are absent.
+- Zenodo and Hugging Face pipelines hardened.
+- OSF optional mirror convenience policy mapped in `docs/osf-optional-mirror-policy.md` (inactive pending live setup).
+- OSF policy validator added: `scripts/check_osf_optional_policy.py`.
+- OSF unit tests added: `tests/test_osf_optional.py`.
+- Local Phase 2 validation command: `python scripts/check_osf_optional_policy.py`.
+- Local validation passed: OSF policy validators, `tests/test_osf_optional.py`, direct Ruff check, and `actionlint .github/workflows/mirror_sync.yml`.
+- Remaining Track 35 items are gated external/user-verification work: GitHub mirror secrets, manual/push trigger verification, and Conductor user manual verification.
