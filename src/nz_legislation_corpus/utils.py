@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 from collections.abc import Iterable
@@ -8,66 +7,76 @@ from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
+# Try to import from the workspace-root shared_utils module.
+# When running as a library (e.g. via `nzlc` CLI), the workspace root
+# may not be on sys.path, so we fall back to local implementations.
+try:
+    import shared_utils  # type: ignore[import-untyped]  # noqa: E402
 
-def sha256_bytes(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
+    sha256_bytes = shared_utils.sha256_bytes
+    sha256_text = shared_utils.sha256_text
+    sha256_file = shared_utils.sha256_file
+    read_json = shared_utils.read_json
+    write_json = shared_utils.write_json
+    append_jsonl = shared_utils.append_jsonl
+    write_jsonl = shared_utils.write_jsonl
+    read_jsonl = shared_utils.read_jsonl
+except ModuleNotFoundError:
+    import hashlib
 
+    def sha256_bytes(data: bytes) -> str:
+        return hashlib.sha256(data).hexdigest()
 
-def sha256_text(text: str) -> str:
-    return sha256_bytes(text.encode("utf-8"))
+    def sha256_text(text: str) -> str:
+        return sha256_bytes(text.encode("utf-8"))
 
+    def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
+        h = hashlib.sha256()
+        with path.open("rb") as f:
+            for chunk in iter(lambda: f.read(chunk_size), b""):
+                h.update(chunk)
+        return h.hexdigest()
 
-def sha256_file(path: Path, chunk_size: int = 1024 * 1024) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for chunk in iter(lambda: f.read(chunk_size), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    def read_json(path: Path, default: Any = None) -> Any:
+        if not path.exists():
+            return default
+        return json.loads(path.read_text(encoding="utf-8"))
 
+    def write_json(path: Path, data: Any) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
 
-def read_json(path: Path, default: Any = None) -> Any:
-    if not path.exists():
-        return default
-    return json.loads(path.read_text(encoding="utf-8"))
+    def append_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> int:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        count = 0
+        with path.open("a", encoding="utf-8") as f:
+            for row in rows:
+                f.write(json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n")
+                count += 1
+        return count
 
+    def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> int:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        count = 0
+        with path.open("w", encoding="utf-8") as f:
+            for row in rows:
+                f.write(json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n")
+                count += 1
+        return count
 
-def write_json(path: Path, data: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8"
-    )
-
-
-def append_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> int:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    count = 0
-    with path.open("a", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n")
-            count += 1
-    return count
-
-
-def write_jsonl(path: Path, rows: Iterable[dict[str, Any]]) -> int:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    count = 0
-    with path.open("w", encoding="utf-8") as f:
-        for row in rows:
-            f.write(json.dumps(row, sort_keys=True, ensure_ascii=False) + "\n")
-            count += 1
-    return count
-
-
-def read_jsonl(path: Path) -> list[dict[str, Any]]:
-    if not path.exists():
-        return []
-    rows: list[dict[str, Any]] = []
-    with path.open("r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                rows.append(json.loads(line))
-    return rows
+    def read_jsonl(path: Path) -> list[dict[str, Any]]:
+        if not path.exists():
+            return []
+        rows: list[dict[str, Any]] = []
+        with path.open("r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    rows.append(json.loads(line))
+        return rows
 
 
 def slug_for_path(value: str, max_len: int = 160) -> str:
